@@ -2,6 +2,7 @@ use clap::Clap;
 use image::png::*;
 use image::ColorType;
 use std::convert::TryFrom;
+use std::path::Path;
 
 #[derive(Clap)]
 #[clap(version = "0.1", author = "toppa102")]
@@ -15,13 +16,13 @@ struct Opts {
 fn main() {
     let opts: Opts = Opts::parse();
 
-    let mut bin_file = std::fs::read(&opts.input).unwrap();
+    let mut binary_file_path = Path::new(&opts.input);
+
+    let mut bin_file = std::fs::read(&binary_file_path).unwrap();
     let bin_size = bin_file.len();
 
-    let mut temp_input = opts.input.clone();
-    temp_input.push_str(".png");
-
-    let img_file = std::fs::File::create(temp_input).unwrap();
+    let img_file =
+        std::fs::File::create(binary_file_path.with_extension("png").file_name().unwrap()).unwrap();
 
     let mut img_size: usize = 0;
     let mut color_type: ColorType = ColorType::L8;
